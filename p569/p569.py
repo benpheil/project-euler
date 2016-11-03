@@ -20,8 +20,8 @@ def mountains_and_valleys_to(k_max, max_prime):
     grade = 1
     k = 0
     for p in primes_to(max_prime):
-        k = k + 0.5
-        if k > k_max:
+        k = k + 1
+        if k // 2 > k_max:
             break
         distance = distance + p
         elevation = elevation + grade * p
@@ -67,7 +67,7 @@ def run_tests():
     test_compute_visible_peaks_brute()
 
 def main():
-    max_k = 9
+    max_k = 1000
     max_prime = int(1e4)
 
     skyline = list(mountains_and_valleys_to(max_k, max_prime))
@@ -75,14 +75,20 @@ def main():
     print(visible_peaks)
     visibility_count = numpy.sum(visible_peaks, axis=0)[0]
     print(visibility_count[0:max_k])
+    total = numpy.cumsum(visibility_count)
+    print(total)
+
+    assert(total[0, 99] == 227)
+    if len(total) < max_k:
+        print("Didn't get them all.")
 
     #skyline_arr = list(list(t for t in zip(*skyline)))
     #pyplot.plot(skyline_arr[0], skyline_arr[1])
     #pyplot.axis('equal')
 
-    #pyplot.imshow(visible_peaks, interpolation='none')
+    pyplot.imshow(visible_peaks, interpolation='none')
 
-    #pyplot.show()
+    pyplot.show()
 
 if __name__ == '__main__':
     run_tests()
