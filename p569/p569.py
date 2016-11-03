@@ -1,15 +1,15 @@
+import gmpy2
 import matplotlib.pyplot as pyplot
 import numpy
 
 def primes_to(n):
-    primes = list(range(2, n + 1))
-    for p in primes:
-        yield p
-        multiple = p
-        while multiple <= n:
-            multiple = multiple + p
-            if multiple in primes:
-                primes.remove(multiple)
+    # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
+    """ Returns  a list of primes < n """
+    sieve = [True] * n
+    for i in xrange(3,int(n**0.5)+1,2):
+        if sieve[i]:
+            sieve[i*i::2*i]=[False]*((n-i*i-1)/(2*i)+1)
+    return [2] + [i for i in xrange(3,n,2) if sieve[i]]
 
 def test_primes():
     assert(list(primes_to(30)) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29])
@@ -67,8 +67,8 @@ def run_tests():
     test_compute_visible_peaks_brute()
 
 def main():
-    max_k = 1000
-    max_prime = int(1e4)
+    max_k = 100
+    max_prime = int(1e7)
 
     skyline = list(mountains_and_valleys_to(max_k, max_prime))
     visible_peaks = compute_visible_peaks_brute(skyline)
@@ -79,7 +79,7 @@ def main():
     print(total)
 
     assert(total[0, 99] == 227)
-    if len(total) < max_k:
+    if  total.size < max_k:
         print("Didn't get them all.")
 
     #skyline_arr = list(list(t for t in zip(*skyline)))
